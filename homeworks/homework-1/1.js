@@ -16,4 +16,4 @@
 const temperatureCelsius = +prompt("Введите температуру в Цельсиях:");
 const temperatureFahrenheit = (9 / 5) * temperatureCelsius + 32;
 
-alert(`Цельсий: ${temperatureCelsius}, Фаренгейт: ${temperatureFahrenheit}`);
+alert(`Цельсий: ${temperatureCelsius}, Фаренгейт: ${temperatureFahrenheit.toFixed(1)}`);
