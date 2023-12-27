@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+
+<body>
+
+    <script>
+
+        let userAnswer = prompt('Зимой и летом одним цветом?');
+        // ==>
+        // if (userAnswer === '') {
+        //     console.log('Пусто');
+        // } else {
+        //     if (userAnswer === 'елка') {
+        //         alert('Молодец');
+        //     } else {
+        //         alert('Не угадал');
+        //     }
+        // }
+
+        // ==>
+        // if (userAnswer === '') {
+        //     alert('Пусто');
+        // } else if (userAnswer === 'елка') {
+        //     alert('Молодец');
+        // } else {
+        //     alert('Не угадал');
+        // }
+
+        // ==>
+        if (userAnswer === 'елка') {
+            alert('Молодец');  
+        } else {
+            alert('Не угадал');
+        }
+
+
+        // ==> Первый вариант тернарного варианта
+        // (условие) ? ДА : НЕТ
+        // (userAnswer === 'елка') ? alert('Молодец') : alert('Не угадал');
+        // alert((userAnswer === 'елка') ? 'Молодец' : 'Не угадал');
+
+        // alert((2 > 3) ? 'скидки' : 'нет скидок');
+
+        
+
+    </script>
+
+</body>
+
+</html>
