@@ -17,16 +17,18 @@
 while (true) {
   const dayNumber = +prompt("Введите целое число в интервале от 1 до 31");
   if (dayNumber > 0 && dayNumber < 32 && Number.isInteger(dayNumber)) {
-    if (dayNumber > 0 && dayNumber <= 10) {
+    if (dayNumber <= 10) {
       console.log(`Число ${dayNumber} попадает в N1 декаду месяца.`);
+      break;
     }
-    if (dayNumber > 10 && dayNumber <= 20) {
+    if (dayNumber <= 20) {
       console.log(`Число ${dayNumber} попадает в N2 декаду месяца.`);
+      break;
     }
-    if (dayNumber >20  && dayNumber <=31) {
+    if (dayNumber <= 31) {
       console.log(`Число ${dayNumber} попадает в N3 декаду месяца.`);
+      break;
     }
-    break;
   } else {
     console.log("Неверное значение");
   }
