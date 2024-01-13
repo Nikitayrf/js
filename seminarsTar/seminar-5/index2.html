@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <div id="test-id">
+        <h1>Тестовая страница</h1>
+        <div class="test-class">
+            <p>Lorem ipsum dolor sit amet consectetur adipisicing elit.</p>
+            <p>Lorem ipsum dolor sit amet consectetur adipisicing.</p>
+            <p>Lorem ipsum dolor sit amet.</p>
+            <p>Lorem, ipsum dolor.</p>
+        </div>
+        <hr>
+        <div class="test-class">
+            <p>Lorem ipsum dolor sit amet, consectetur adipisicing.</p>
+            <p>Lorem ipsum dolor sit amet.</p>
+        </div>
+    </div>
+    <script>
+        'use strict';
+
+        const divEl = document.querySelector(".test-class:last-child");
+        const childElements = divEl.children;
+
+    </script>
+    
+</body>
+</html>

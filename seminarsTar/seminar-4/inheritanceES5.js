@@ -3,44 +3,44 @@
 /* наследование свойств и методов другого класса
  через перезапись базового класса ES 5 */
 
-function Person(name, gender) {
+function PersonES5(name, gender) {
     this.name = name;
     this.gender = gender;
 }
 
-Person.prototype.sayName = function () {
+PersonES5.prototype.sayName = function () {
     console.log(`Меня зовут: ${this.name}.`);
 };
 
-const person1 = new Person('Павел', 'm');
+const PersonES51 = new PersonES5('Павел', 'm');
 
 
-function Employee(name, gender, position) {
-    Person.call(this, name, gender);
+function EmpoyeeES5(name, gender, position) {
+    PersonES5.call(this, name, gender);
     this.position = position;
 }
 
-// { sayPosition: f(), __proto__: Person.prototype }
-Employee.prototype = Object.create(Person.prototype);
-Employee.prototype.constructor = Employee;
+// { sayPosition: f(), __proto__: PersonES5.prototype }
+EmpoyeeES5.prototype = Object.create(PersonES5.prototype);
+EmpoyeeES5.prototype.constructor = EmpoyeeES5;
 
-Employee.prototype.sayPosition = function () {
+EmpoyeeES5.prototype.sayPosition = function () {
     console.log(`Моя должность: ${this.position}.`);
 };
 
-const empoyee1 = new Employee('Павел', 'm', 'Дворник');
+const empoyeeES5 = new EmpoyeeES5('Павел', 'm', 'Дворник');
 
 
-function SuperEmployee(name, gender, position, age) {
-    Employee.call(this, name, gender, position);
+function SuperEmployeeES5(name, gender, position, age) {
+    EmpoyeeES5.call(this, name, gender, position);
     this.age = age;
 }
 
-SuperEmployee.prototype = Object.create(Employee.prototype);
-SuperEmployee.prototype.constructor = SuperEmployee;
+SuperEmployeeES5.prototype = Object.create(EmpoyeeES5.prototype);
+SuperEmployeeES5.prototype.constructor = SuperEmployeeES5;
 
-SuperEmployee.prototype.sayAge = function () {
+SuperEmployeeES5.prototype.sayAge = function () {
     console.log(`Мой возраст ${this.age}`);
 };
 
-const SuperEmployee1 = new SuperEmployee('Павел', 'm', 'Дворник', '32');
+const SuperEmpoyeeEs5_1 = new SuperEmployeeES5('Павел', 'm', 'Дворник', '32');
