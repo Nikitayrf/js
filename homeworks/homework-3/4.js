@@ -23,10 +23,7 @@ const getDifference = (num1, num2) => {
     if (num1 > num2) {
         return num1 - num2;
     }
-    if (num2 > num1) {
-        return num2 - num1;
-    }
-    return 0;
+    return num2 - num1;
 };
 const getMultiplication = (num1, num2) => num1 * num2;
 const getDivision = (num1, num2) => num1 / num2;

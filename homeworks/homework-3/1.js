@@ -7,6 +7,6 @@
 который получаем от функции, в консоль.
 */
 
-const getPow = num => Math.pow(num, 3);
+const getPow = num => num ** 3;
 
 console.log(getPow(3));
