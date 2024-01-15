@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+  </head>
+  <body>
+    <button>Click</button>
+    <script>
+      "use strict";
+
+      const arrAnswer = ["елка", "ёлка", "ель"];
+      const userAnswer = prompt("Зимой и летом одним цветом");
+
+      for (let i = 0; i < arrAnswer.length; i++) {
+        const element = arrAnswer[i];
+        if (element === userAnswer) {
+          console.log("Молодец");
+          break;
+        } else {
+          continue;
+        }
+      }
+    </script>
+  </body>
+</html>
