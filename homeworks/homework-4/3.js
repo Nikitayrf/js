@@ -21,18 +21,10 @@ for (let i = 0; i < 5; i++) {
 }
 console.log(newArr);
 
-let sumEl = 0;
-for (const iterator of newArr) {
-    sumEl += iterator
-}
+const sumEl = newArr.reduce((currentSum, currentNumber) => currentSum + currentNumber);
 console.log(`Сумму элементов массива: ${sumEl}`);
 
-let minNewArr = newArr[0];
-for (let i = 0; i < newArr.length; i++) {
-    if (newArr[i] < minNewArr) {
-        minNewArr = newArr[i];
-    }
-}
+const minNewArr = Math.min(...newArr);
 console.log(`Минимальное значение в массиве ${minNewArr}`);
 
 const arrWithIndexWhenElement3 = [];
