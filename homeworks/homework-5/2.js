@@ -52,3 +52,6 @@ function getValue(object) {
 }
 
 console.log(getValue(post));
+
+// 2. Второй способ получить значения
+console.log(post.comments[0].rating.dislikes);

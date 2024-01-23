@@ -31,14 +31,11 @@ const productsNew = [
   },
 ];
 
-const res = productsNew.filter((obj) => {
-  if (obj['photos'] === undefined) return false
-  if (obj['photos'].length > 0) return true
-  return false
-});
+const res = productsNew.filter((obj) =>
+  obj.photos && obj.photos.length > 0);
 console.log(res);
 
-productsNew.sort(function (a, b) {
+productsNew.sort((a, b) => {
   return a.price - b.price;
 });
 console.log(productsNew);
