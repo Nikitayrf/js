@@ -7,4 +7,4 @@ const DjaivProtoProto = Object.getPrototypeOf(DjaivProto);
 console.log(DjaivProtoProto.model);  // vacuum cleaner
 
 const DjaivProtoProtoProto = Object.getPrototypeOf(DjaivProtoProto);
-console.log(DjaivProtoProtoProto);
+console.log(DjaivProtoProtoProto);  // {constructor: ƒ, __defineGetter__: ƒ, __defineSetter__: ƒ, hasOwnProperty: ƒ, __lookupGetter__: ƒ, …}
