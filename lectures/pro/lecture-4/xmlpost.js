@@ -43,8 +43,8 @@ xhr.onerror = function () {
 //   'data': '',
 //   'files': {},
 //   'form': {
-//     'name': 'Slava',
-//     'surname': 'Belkin'
+//     'name': 'Slava', <----- Внимание в сервера пришёл ответ содержащий ключ/значение
+//     'surname': 'Belkin' <----Внимание в сервера пришёл ответ содержащий
 //   },
 //   'headers': {
 //     'Accept': '*/*',
