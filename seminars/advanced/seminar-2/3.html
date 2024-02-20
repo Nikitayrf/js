@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+  </head>
+  <body>
+    <!-- Задание 3.
+        Вы создаете интерфейс, где пользователь вводит число. Ваша задача —
+    проверить, является ли введенное значение числом или нет, и дать
+    соответствующий ответ. 
+    1. Создайте HTML-структуру: текстовое поле для ввода числа и кнопку "Проверить". 
+    2. Добавьте место (например, div) для вывода сообщения пользователю. 
+    3. Напишите функцию, которая будет вызвана при нажатии на кнопку. Эта функция должна использовать try и catch для проверки вводимого значения. -->
+
+    <input type="text" class="number-input" placeholder="Введите число" />
+    <button class="check-button">Проверить</button>
+    <div class="message"></div>
+    <script>
+      const numberInput = document.querySelector(".number-input");
+      const checkButton = document.querySelector(".check-button");
+      const message = document.querySelector(".message");
+      checkButton.addEventListener("click", () => {
+        try {
+          const number = Number(numberInput.value);
+          if (isNaN(number) || numberInput.value === "") {
+            throw new Error("Это не число!");
+          }
+          message.textContent = "Вы ввели число";
+        } catch (error) {
+          message.textContent = error.message;
+        }
+      });
+    </script>
+  </body>
+</html>
