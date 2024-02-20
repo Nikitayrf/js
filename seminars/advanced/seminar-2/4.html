@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+  </head>
+  <body>
+    <!-- Задание 4.
+    Пользователи вашего сайта могут добавлять элементы в список. Но есть условие: введенное значение должно содержать от 3 до 10 символов.
+
+    1. Создайте HTML-структуру с текстовым полем, кнопкой и списком.
+    2. Напишите функцию, которая будет добавлять элементы в список или генерировать исключение, если длина введенного значения не соответствует требованиям. -->
+
+    <input type="text" class="user-input" />
+    <button class="add-button">Добавить</button>
+    <ul class="item-list"></ul>
+    <div class="error-message"></div>
+    <script type="module">
+      const stringInput = document.querySelector(".user-input");
+      const addButton = document.querySelector(".add-button");
+      const ulList = document.querySelector(".item-list");
+      const errorMessage = document.querySelector(".error-message");
+      addButton.addEventListener("click", () => {
+        try {
+          const string = stringInput.value;
+          if (string.length < 3 || string.length > 10) {
+            throw new Error(
+              "Введенная строка не удовлетворяет колличеству символов"
+            );
+          }
+          const li = document.createElement("li");
+          li.textContent = string;
+          ulList.appendChild(li);
+          errorMessage.textContent = "";
+        } catch (e) {
+          errorMessage.textContent = e.message;
+        } finally {
+          console.log("Попытка добавления.");
+        }
+      });
+    </script>
+  </body>
+</html>
