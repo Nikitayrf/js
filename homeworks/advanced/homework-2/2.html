@@ -28,7 +28,7 @@
       addButton.addEventListener("click", () => {
         try {
           const inputData = stringInput.value;
-          if (inputData.length < 5 || inputData.length > 50) {
+          if (inputData.length < 50 || inputData.length > 500) {
             throw new Error(
               " Введенная строка не удовлетворяет количеству введённых символов"
             );
