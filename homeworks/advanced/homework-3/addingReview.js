@@ -12,8 +12,8 @@ const addBtn = document.querySelector('.addreview-btn');
 
 // Добавление назнания продутка и отзыва
 addBtn.addEventListener('click', () => {
-    const productName = productNameInput.value;
-    const review = reviewInput.value;
+    const productName = productNameInput.value.trim();
+    const review = reviewInput.value.trim();
 
     if (!productName || !review) {
         alert('Вы ввели не все данные');
