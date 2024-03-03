@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Task 3</title>
+  </head>
+  <body>
+    <button class="addnews-btn">Добавить статью</button>
+    <ul class="news"></ul>
+
+    <script>
+      /* Задание 3.
+      Необходимо создать страницу со списком статей. Каждая статья состоит из id, заголовка, текста статьи. 
+      id - будем брать из unix timestamp.Необходимо подготовить список статей в JSON-формате, которые будут выводиться на странице при первом ее открытии. 
+        - Необходимо реализовать возможность удаления статьи. 
+        - Необходимо реализовать возможность добавления статьи.
+        - Необходимо реализовать возможность изменения статьи, ввод данных можно реализовать через prompt. 
+      Статьи должны сохраняться в локальное хранилище браузера, и должны быть доступны после перезагрузки страницы.*/
+
+      // ----- Сохранение JSON приходящего с сервера в localStrorage в виде строки -------
+
+      // ----- Эмитация работы сервера -----
+      // 1. На сервере храниться массив объектов
+      const arrObjectsOnServer = [
+        {
+          id: Date.now(),
+          title: "заголовок 1",
+          text: "текст 1",
+        },
+        {
+          id: Date.now(),
+          title: "заголовок 2",
+          text: "текст 2",
+        },
+        {
+          id: Date.now(),
+          title: "заголовок 3",
+          text: "текст 3",
+        },
+      ];
+
+      // console.log(arrObjectsOnServer);
+      /* Внимание! id объектов одинаковые!
+      0: {id: 1709392272121, title: 'заголовок 1', text: 'текст 1'}
+      1: {id: 1709392272121, title: 'заголовок 2', text: 'текст 2'}
+      2: {id: 1709392272121, title: 'заголовок 3', text: 'текст 3'}
+      length: 3
+      [[Prototype]]: Array(0)
+      */
+
+      // 2. Преобразуем массив объектов в JSON-строку что бы его можно было передавать через HTTP
+
+      const jsonStringFromServer = JSON.stringify(arrObjectsOnServer);
+      // console.log(jsonStringFromServer);
+      /*
+      [{"id":1709392756586,"title":"заголовок 1","text":"текст 1"},{"id":1709392756586,"title":"заголовок 2","text":"текст 2"},{"id":1709392756586,"title":"заголовок 3","text":"текст 3"}]
+      */
+
+      //  В учебных целях, в ручную меняем id объектов для сохранения json-строки в localStorage
+      // Т.е. копируем из jsonStringFromServer в initialJson в измененными id
+      // Первоначальный массив данных
+      const initialJson =
+        '[{"id":1708971051521,"title":"заголовок 1","text":"текст 1"},{"id":1708971051522,"title":"заголовок 2","text":"текст 2"},{"id":1708971051523,"title":"заголовок 3","text":"текст 3"}]';
+
+      // --------- Работа с localStorage --------------------
+
+      // Создаём ключ по которому, будут храниться первоначальные данные в localStorage
+      const lsKey = "articles";
+
+      // Проверка, что если первоначальные данные в localStorage, если нет, то создаём ключ со lsKey со значением initialJson
+      if (!localStorage.getItem(lsKey)) {
+        localStorage.setItem(lsKey, initialJson);
+      }
+
+      // Получаем данные с которыми будем работать из localStorage и преобразуем их к массиву объектов из json-строки
+      const articles = JSON.parse(localStorage.getItem(lsKey));
+      // console.log(articles);
+      /*
+      0: {id: 1708971051521, title: 'заголовок 1', text: 'текст 1'}
+      1: {id: 1708971051522, title: 'заголовок 2', text: 'текст 2'}
+      2: {id: 1708971051523, title: 'заголовок 3', text: 'текст 3'}
+      length: 3
+      [[Prototype]]: Array(0)
+      */
+
+      // Выбираем элемент куда будем добавлять данные из массива объектов из localStorage
+      const ulList = document.querySelector(".news");
+      // Проходим по массиву объектов через map и для каждого объекта применяем функцию createArticleHTML, которая возвращает HTML с данными из объекта и вставляет в элемент ulList
+      ulList.innerHTML = articles.map(createArticleHTML).join("");
+
+      // Возвращает HTML с данными переданного объекта
+      function createArticleHTML(article) {
+        return `<li id="${article.id}">
+              <h2 class="title">${article.title}</h2>
+              <p class="text">${article.text}</p>
+              <button class="delete-btn">Удалить</button>
+              <button class="edit-btn">Редактировать</button>
+          </li>`;
+      }
+
+      // Выбираем кнопку "Удаления" элемента
+      const deleteBtn = document.querySelector(".delete-btn");
+
+      // Создаём обработчик по клику для каждого элемента в списке ulList и вкачестве и качестве функции обратного вызова используем диструктуризацию события event, выбираем у event только свойство target
+      ulList.addEventListener("click", ({ target }) => {
+        // Получение элемента <li> ближайшего к кнопке "Удалить"
+        const liItem = target.closest("li");
+        // Проверка, если у элемента на котором произошло событие ближайший элемент кнопка "Удалить"
+        if (target.closest(".delete-btn")) {
+          // Удалить ближайший элемент li к кнопке "Удалить"
+          liItem.remove();
+
+          // Поиск индекса элемента который нужно удалить в localstorage
+          // Используем сравнение +liItem.getAttribute("id") потому что id хранить в атрибуье элемента и используем +, что бы преобразовать к числу
+          const indexOfArticleToBeDeletedFromLocalStorage = articles.findIndex(
+            (article) => article.id === +liItem.getAttribute("id")
+          );
+
+          // Удалить 1 элемент из массива articles (массив с объектами из localStorage)
+          articles.splice(indexOfArticleToBeDeletedFromLocalStorage, 1);
+
+          // Сохранить изменения в localStorage
+          localStorage.setItem(lsKey, JSON.stringify(articles));
+        } else if (target.closest(".edit-btn")) {
+          // Проверка, если у элемента на котором произошло событие ближайший элемент кнопка "Изменить"
+          const title = prompt("Введите название статьи");
+          const text = prompt("Введите текст статьи");
+
+          // Проверка что поля ввода существуют
+          if (!text || !title) {
+            alert("Не ввели данные");
+            return;
+          }
+
+          // Поиск индекса элемента который нужно изменить в localstorage
+          const article = articles.find(
+            (article) => article.id === +liItem.getAttribute("id")
+          );
+
+          // Изменяем данные в объекте который нашли
+          article.title = title;
+          article.text = text;
+
+          // Сохранить изменения в localStorage
+          localStorage.setItem(lsKey, JSON.stringify(articles));
+
+          // Возвращаем HTML с данными переданного объекта
+          liItem.querySelector(".title").textContent = title;
+          liItem.querySelector(".text").textContent = text;
+        }
+      });
+
+      // Выбор элемента для добавления стать
+      const addBtn = document.querySelector(".addnews-btn");
+
+      addBtn.addEventListener("click", () => {
+        const title = prompt("Введите название статьи");
+        const text = prompt("Введите текст статьи");
+
+        // Проверка что поля ввода title и text существую
+        if (text && title) {
+          // Создание нового объекта article
+          const newArticle = {
+            id: Date.now(),
+            title,
+            text,
+          };
+          // Добавление нового объекта article в массив articles
+          articles.push(newArticle);
+          // Сохранение изменений в localStorage
+          localStorage.setItem(lsKey, JSON.stringify(articles));
+          // Вставка нового объекта article в ulList
+          ulList.insertAdjacentHTML("beforeend", createArticleHTML(newArticle));
+        } else {
+          alert("Вы неверно ввели данные статьи");
+        }
+      });
+    </script>
+  </body>
+</html>
