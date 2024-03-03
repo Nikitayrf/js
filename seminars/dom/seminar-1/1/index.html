@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Задание 1 Страница 1</title>
+    <!-- <script defer src="1.js"></script> -->
+  </head>
+  <body>
+    <!-- Для задание 1 -->
+    <p class="height">Высота: <span></span></p>
+    <p class="width">Ширина: <span></span></p>
+
+    <script>
+      /* Задание 1.
+      1. Необходимо выводить на страницу текущую ширину и высоту окна браузера, при изменении значений, вывод также должен меняться. */
+
+      const heightWindow = document.querySelector(".height>span");
+      const widthWindow = document.querySelector(".width>span");
+
+      heightWindow.textContent = window.innerHeight;
+      widthWindow.textContent = window.innerWidth;
+
+      window.addEventListener("resize", () => {
+        heightWindow.textContent = window.innerHeight;
+        widthWindow.textContent = window.innerWidth;
+      });
+
+      /* 2. При закрытии страницы (вкладки), необходимо выводить всплывающее окно или диалоговое окно браузера и cпросить, уверен ли пользователь, что хочет покинуть страницу? */
+
+      window.addEventListener("beforeunload", (event) => {
+        // Говорим браузеру, что сами разберемся с событем по умолчанию
+        event.preventDefault();
+        // Выводим вопрос
+        alert("Вы уверены, что хотите покинуть страницу?");
+      });
+    </script>
+  </body>
+</html>

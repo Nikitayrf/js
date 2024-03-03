@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Task 2</title>
+    <style>
+      .box {
+        width: 100px;
+        height: 100px;
+        background-color: lightblue;
+        margin: 10px;
+        display: inline-block;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="wrapper">
+      <button id="addButton">Добавить элемент</button>
+      <button id="removeButton">Удалить элемент</button>
+      <button id="cloneButton">Клонировать элемент</button>
+      <div id="container">
+        <div class="box">1</div>
+        <div class="box">2</div>
+        <div class="box">3</div>
+      </div>
+    </div>
+    <script>
+      /* Задание 2
+      Даны html и css выше:
+      Необходимо создать страницу, в которой будут работать все три кнопки.
+        - При нажатии на кнопку "Добавить элемент" на страницу добавляется новый квадратный элемент (<div>) с размерами 100x100 пикселей. Этот элемент должен иметь класс .box и содержать текст, указывающий порядковый номер элемента (1, 2, 3 и так далее).
+        - При нажатии на кнопку "Удалить элемент" удаляется последний добавленный элемент, если таковой имеется. 
+        - При нажатии на кнопку "Клонировать элемент" создается копия последнего добавленного элемента и добавляется на страницу. Если последнего добавленного элемента нет на странице, необходимо вывести сообщение в alert, с надписью о невозможности клонирования, так как клонировать нечего. */
+
+      const wrapContainer = document.querySelector(".wrapper");
+      const container = wrapContainer.querySelector("#container");
+
+      // Добавляем на контейнер кнопками wrapper событие клик при котором при помощи делегирования события определяем на какой именно кнопке было событие
+      wrapContainer.addEventListener("click", (event) => {
+        // Если событие клик было на кнопке addButton, то
+        if (event.target.closest("#addButton")) {
+          // Создаём элемент div
+          const box = document.createElement("div");
+          // Добавляем созданному div класс box
+          box.classList.add("box");
+          // Добавлем в созданный div текст увеличенным на 1 значением
+          box.textContent = container.children.length + 1;
+          // Добавляем в container с div ранее созданный div
+          container.append(box);
+        } else if (event.target.closest("#removeButton")) {
+          // Если событие клик было на кнопке removeButton, то
+          // Удаляем элемент на последний элемент в контейнере, так же если в контейнере элементов не будет, то благодаря проверки через опциональную цепочку вызовов ?. не будет ошибки
+          container.lastElementChild?.remove();
+        } else if (event.target.closest("#cloneButton")) {
+          // Если событие клик было на кнопке cloneButton, то
+          // Проверяем длина контейнера с элементами больше 0
+          if (container.children.length > 0) {
+            // Создаём копию последнего добавленного элемента
+            const clone = container.lastElementChild.cloneNode(true);
+            // Добавляем копию последнего добавленного элемента в контейнер
+            container.append(clone);
+          }
+        }
+      });
+    </script>
+  </body>
+</html>
