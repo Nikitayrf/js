@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Homework 1</title>
+  </head>
+  <body>
+    <!-- Необходимо создать веб-страницу с динамическими элементами с расписанием занятий.
+    На странице должна быть таблица с расписанием занятий, на основе JSON-данных.
+    Каждая строка таблицы должна содержать информацию о занятии, а именно:
+    - название занятия
+    - время проведения занятия
+    - максимальное количество участников
+    - текущее количество участников
+    - кнопка "записаться"
+    - кнопка "отменить запись"
+
+    Если максимальное количество участников достигнуто, либо пользователь уже записан на занятие, сделайте кнопку "записаться" неактивной.
+    Кнопка "отменить запись" активна в случае, если пользователь записан на занятие, иначе она должна быть неактивна.
+
+    Пользователь может записаться на один курс только один раз.
+
+    При нажатии на кнопку "записаться" увеличьте количество записанных участников.
+    Если пользователь нажимает "отменить запись", уменьшите количество записанных участников.
+    Обновляйте состояние кнопок и количество участников в реальном времени.
+
+    Если количество участников уже максимально, то пользователь не может записаться, даже если он не записывался ранее.
+
+    Сохраняйте данные в LocalStorage, чтобы они сохранялись и отображались при перезагрузке страницы. -->
+    <table class="table">
+      <thead>
+        <tr>
+          <th>Название занятия</th>
+          <th>Время проведения занятия</th>
+          <th>Максимальное количество участников</th>
+          <th>Текущее количество участников</th>
+          <th>Записаться</th>
+          <th>Отменить запись</th>
+        </tr>
+      </thead>
+      <tbody class="table-body"></tbody>
+    </table>
+    <script>
+      const arrObjectsFromServer = [
+        {
+          id: 1,
+          name: "Йога",
+          time: "10:00 - 11:00",
+          maxParticipants: 15,
+          currentParticipants: 8,
+        },
+        {
+          id: 2,
+          name: "Пилатес",
+          time: "11:30 - 12:30",
+          maxParticipants: 10,
+          currentParticipants: 5,
+        },
+        {
+          id: 3,
+          name: "Кроссфит",
+          time: "13:00 - 14:00",
+          maxParticipants: 20,
+          currentParticipants: 15,
+        },
+        {
+          id: 4,
+          name: "Танцы",
+          time: "14:30 - 15:30",
+          maxParticipants: 12,
+          currentParticipants: 10,
+        },
+        {
+          id: 5,
+          name: "Бокс",
+          time: "16:00 - 17:00",
+          maxParticipants: 8,
+          currentParticipants: 6,
+        },
+      ];
+      const initialJson = JSON.stringify(arrObjectsFromServer);
+
+      const lsKey = "lessons";
+
+      if (!localStorage.getItem(lsKey)) {
+        localStorage.setItem(lsKey, initialJson);
+      }
+      const lessonsLS = JSON.parse(localStorage.getItem(lsKey));
+
+      const tableBody = document.querySelector(".table-body");
+      tableBody.innerHTML = lessonsLS.map(createLessonHTML).join("");
+
+      function createLessonHTML(lesson) {
+        return `
+                    <tr id="${lesson.id}">
+                        <td class="lesson-name">${lesson.name}</td>
+                        <td class="lesson-start-time">${lesson.time}</td>
+                        <td class="lesson-max-participants">${lesson.maxParticipants}</td>
+                        <td class="lesson-current-participants">${lesson.currentParticipants}</td>
+                        <td><button class="add-button">Записаться</button></td>
+                        <td><button class="cancel-button" disabled>Отменить запись</button></td>
+                    </tr>
+                    `;
+      }
+
+      for (const lesson of lessonsLS) {
+        if (lesson.maxParticipants <= lesson.currentParticipants) {
+          document.querySelector(`.add-button`).disabled = true;
+        }
+        if (lesson.isRegistered) {
+          const currentLesson = document.getElementById(`${lesson.id}`);
+
+          const addBtn = currentLesson.querySelector(".add-button");
+          addBtn.disabled = true;
+
+          const cancelButton = currentLesson.querySelector(".cancel-button");
+          cancelButton.disabled = false;
+        }
+      }
+
+      tableBody.addEventListener("click", ({ target }) => {
+        if (target.closest(".add-button") || target.closest(".cancel-button")) {
+          const chosenLesson = target.closest("tr");
+          const indexOfChosenLesson = lessonsLS.findIndex(
+            (lesson) => lesson.id === +chosenLesson.id
+          );
+          const cancelBtn = chosenLesson.querySelector(".cancel-button");
+          const addBtn = chosenLesson.querySelector(".add-button");
+          const currentParticipants = chosenLesson.querySelector(
+            ".lesson-current-participants"
+          );
+
+          if (target.closest(".add-button")) {
+            lessonsLS[indexOfChosenLesson].currentParticipants++;
+            lessonsLS[indexOfChosenLesson].isRegistered = true;
+            target.disabled = true;
+            cancelBtn.disabled = false;
+          }
+
+          if (target.closest(".cancel-button")) {
+            lessonsLS[indexOfChosenLesson].currentParticipants--;
+            lessonsLS[indexOfChosenLesson].isRegistered = false;
+            target.disabled = true;
+            addBtn.disabled = false;
+          }
+
+          currentParticipants.innerHTML = `${lessonsLS[indexOfChosenLesson].currentParticipants}`;
+          localStorage.setItem(lsKey, JSON.stringify(lessonsLS));
+        }
+      });
+    </script>
+  </body>
+</html>
