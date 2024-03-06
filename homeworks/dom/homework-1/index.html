@@ -28,21 +28,9 @@
     Если количество участников уже максимально, то пользователь не может записаться, даже если он не записывался ранее.
 
     Сохраняйте данные в LocalStorage, чтобы они сохранялись и отображались при перезагрузке страницы. -->
-    <table class="table">
-      <thead>
-        <tr>
-          <th>Название занятия</th>
-          <th>Время проведения занятия</th>
-          <th>Максимальное количество участников</th>
-          <th>Текущее количество участников</th>
-          <th>Записаться</th>
-          <th>Отменить запись</th>
-        </tr>
-      </thead>
-      <tbody class="table-body"></tbody>
-    </table>
+    <h1 class="title">Расписание занятий</h1>
+    <div class="list-lessons"></div>
     <script>
-      "use strict";
       const arrObjectsFromServer = [
         {
           id: 1,
@@ -80,76 +68,114 @@
           currentParticipants: 6,
         },
       ];
-      const initialJson = JSON.stringify(arrObjectsFromServer);
 
-      const lsKey = "lessons";
+      initialLessons = JSON.stringify(arrObjectsFromServer);
 
-      if (!localStorage.getItem(lsKey)) {
-        localStorage.setItem(lsKey, initialJson);
+      const localStorageKey = "lessons";
+      const userLessonsLocalStorageKey = "userLessons";
+
+      const saveData = (key, array) => {
+        localStorage.setItem(key, JSON.stringify(array));
+      };
+
+      if (!localStorage.getItem(localStorageKey)) {
+        localStorage.setItem(localStorageKey, initialLessons);
       }
-      const lessonsLS = JSON.parse(localStorage.getItem(lsKey));
-
-      const tableBody = document.querySelector(".table-body");
-      tableBody.innerHTML = lessonsLS.map(createLessonHTML).join("");
-
-      function createLessonHTML(lesson) {
-        return `
-                    <tr id="${lesson.id}">
-                        <td class="lesson-name">${lesson.name}</td>
-                        <td class="lesson-start-time">${lesson.time}</td>
-                        <td class="lesson-max-participants">${lesson.maxParticipants}</td>
-                        <td class="lesson-current-participants">${lesson.currentParticipants}</td>
-                        <td><button class="add-button">Записаться</button></td>
-                        <td><button class="cancel-button" disabled>Отменить запись</button></td>
-                    </tr>
-                    `;
+      if (!localStorage.getItem(userLessonsLocalStorageKey)) {
+        localStorage.setItem(userLessonsLocalStorageKey, JSON.stringify([]));
       }
 
-      for (const lesson of lessonsLS) {
-        if (lesson.maxParticipants <= lesson.currentParticipants) {
-          document.querySelector(`.add-button`).disabled = true;
+      const lessonsData = JSON.parse(localStorage.getItem(localStorageKey));
+      const usersData = JSON.parse(
+        localStorage.getItem(userLessonsLocalStorageKey)
+      );
+      const listLessonsEl = document.querySelector(".list-lessons");
+
+      lessonsData.forEach((lesson) => {
+        listLessonsEl.insertAdjacentHTML(
+          "beforeend",
+          `
+            <div class="lessonName" data-id="${lesson.id}">${lesson.name}
+                <div class="time">${lesson.time}</div>
+                <div class="maxText">Максимальное количество:</div>
+                <div class="maxNumber">${lesson.maxParticipants}</div>
+                <div class="currentText">Текущее количество:</div>
+                <div class="currentNumber">${lesson.currentParticipants}</div>
+                <button class="lesson__btn-add">Записаться</button>
+                <button class="lesson__btn-cancel">Отменить запись</button>
+            </div>
+    `
+        );
+
+        const currentLesson = document.querySelector(
+          `.lessonName[data-id='${lesson.id}']`
+        );
+        const addBtnEl = currentLesson.querySelector(".lesson__btn-add");
+        const cancelBtnEl = currentLesson.querySelector(".lesson__btn-cancel");
+        const currentNumberEl = currentLesson.querySelector(".currentNumber");
+        const maxNumberEl = currentLesson.querySelector(".maxNumber");
+        const current = +currentNumberEl.textContent;
+        const max = +maxNumberEl.textContent;
+
+        if (!Number.isNaN(max) && !Number.isNaN(current)) {
+          if (current >= max) addBtnEl.disabled = true;
         }
-        if (lesson.isRegistered) {
-          const currentLesson = document.getElementById(`${lesson.id}`);
 
-          const addBtn = currentLesson.querySelector(".add-button");
-          addBtn.disabled = true;
+        if (usersData.includes(lesson.name)) {
+          addBtnEl.disabled = true;
+          cancelBtnEl.disabled = false;
+        } else cancelBtnEl.disabled = true;
+      });
 
-          const cancelButton = currentLesson.querySelector(".cancel-button");
-          cancelButton.disabled = false;
-        }
-      }
-
-      tableBody.addEventListener("click", ({ target }) => {
-        if (target.closest(".add-button") || target.closest(".cancel-button")) {
-          const chosenLesson = target.closest("tr");
-          const indexOfChosenLesson = lessonsLS.findIndex(
-            (lesson) => lesson.id === +chosenLesson.id
-          );
-          const cancelBtn = chosenLesson.querySelector(".cancel-button");
-          const addBtn = chosenLesson.querySelector(".add-button");
-          const currentParticipants = chosenLesson.querySelector(
-            ".lesson-current-participants"
-          );
-
-          if (target.closest(".add-button")) {
-            lessonsLS[indexOfChosenLesson].currentParticipants++;
-            lessonsLS[indexOfChosenLesson].isRegistered = true;
-            target.disabled = true;
-            cancelBtn.disabled = false;
-          }
-
-          if (target.closest(".cancel-button")) {
-            lessonsLS[indexOfChosenLesson].currentParticipants--;
-            lessonsLS[indexOfChosenLesson].isRegistered = false;
-            target.disabled = true;
-            addBtn.disabled = false;
-          }
-
-          currentParticipants.innerHTML = `${lessonsLS[indexOfChosenLesson].currentParticipants}`;
-          localStorage.setItem(lsKey, JSON.stringify(lessonsLS));
+      listLessonsEl.addEventListener("click", ({ target }) => {
+        if (target.matches(".lesson__btn-add")) {
+          addBtn(target);
+        } else if (target.matches(".lesson__btn-cancel")) {
+          cancelBtn(target);
         }
       });
+
+      function addBtn(target) {
+        const fatherEl = target.closest(".lessonName");
+        const currentNumberEl = fatherEl.querySelector(".currentNumber");
+        const cancelBtnEl = fatherEl.querySelector(".lesson__btn-cancel");
+        const current = +currentNumberEl.textContent;
+
+        if (!Number.isNaN(current)) {
+          currentNumberEl.textContent = current + 1;
+          target.disabled = true;
+          cancelBtnEl.disabled = false;
+
+          const newData = lessonsData.find(
+            (lesson) => lesson.id === +fatherEl.dataset.id
+          );
+          newData.currentParticipants = currentNumberEl.textContent;
+          saveData(localStorageKey, lessonsData);
+
+          usersData.push(newData.id);
+          saveData(userLessonsLocalStorageKey, usersData);
+        }
+      }
+
+      function cancelBtn(target) {
+        const fatherEl = target.closest(".lessonName");
+        const currentNumberEl = fatherEl.querySelector(".currentNumber");
+        const btnAddEl = fatherEl.querySelector(".lesson__btn-add");
+        const current = +currentNumberEl.textContent;
+
+        currentNumberEl.textContent = current - 1;
+        target.disabled = true;
+        btnAddEl.disabled = false;
+
+        const newData = lessonsData.find(
+          (lesson) => lesson.id === +fatherEl.dataset.id
+        );
+        newData.currentParticipants = currentNumberEl.textContent;
+        saveData(localStorageKey, lessonsData);
+
+        usersData.splice(usersData.indexOf(newData.id), 1);
+        saveData(userLessonsLocalStorageKey, usersData);
+      }
     </script>
   </body>
 </html>
