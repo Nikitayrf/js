@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Task</title>
+  </head>
+  <body>
+    <ul id="taskList">
+      <li>
+        Задача 1 <button class="delete-button">Удалить</button
+        ><button class="clone-button">Клонировать</button>
+      </li>
+      <li>
+        Задача 2 <button class="delete-button">Удалить</button
+        ><button class="clone-button">Клонировать</button>
+      </li>
+      <li>
+        Задача 3 <button class="delete-button">Удалить</button
+        ><button class="clone-button">Клонировать</button>
+      </li>
+    </ul>
+    <button class="clear">Вернуть всё как было</button>
+
+    <script>
+      const taskList = document.getElementById("taskList");
+      const clearEl = document.querySelector(".clear");
+
+      // Добавить обработчик на список задач taskList по клику
+      taskList.addEventListener("click", (event) => {
+        // Проверка произошёл ли клик по кнопке "Удалить"
+        if (event.target.classList.contains("delete-button")) {
+          // Получение элемента <li> ближайшего к кнопке "Удалить"
+          const taskItem = event.target.closest("li");
+          // Удаление элемента <li> из DOM
+          taskItem.remove(); // Удаление задачи
+
+          // Сохранение списка задач в локальном хранилище
+          localStorage.setItem("taskList", taskList.innerHTML);
+        }
+
+        // Проверка произошёл ли клик по кнопке "Клонировать"
+        if (event.target.classList.contains("clone-button")) {
+          // Получение элемента <li> ближайшего к кнопке "Клонировать"
+          const taskItem = event.target.closest("li");
+          const clonedTaskItem = taskItem.cloneNode(true); // Клонирование задачи
+          taskItem.after(clonedTaskItem); // Вставка клонированной задачи после текущей задачи
+
+          // Сохранение списка задачив локальном хранилище
+          localStorage.setItem("taskList", taskList.innerHTML);
+        }
+      });
+
+      // Восстановление списка задач из локального хранилища при загрузке страницы
+      if (localStorage.getItem("taskList")) {
+        taskList.innerHTML = localStorage.getItem("taskList");
+      }
+
+      // Обработчик на кнопку "Вернуть всё как было"
+      clearEl.addEventListener("click", function (e) {
+        // Отчисть localStorage
+        localStorage.clear();
+      });
+    </script>
+  </body>
+</html>
