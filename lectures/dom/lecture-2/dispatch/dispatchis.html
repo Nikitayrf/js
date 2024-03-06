@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+  </head>
+  <body>
+    <button id="btn">Нажми меня</button>
+
+    <script>
+      const button = document.querySelector("#btn");
+
+      button.addEventListener("click", () => {
+        // Проверка было ли событие клика совершено пользователем
+        if (event.isTrusted) {
+          console.log("Клик события является доверенным");
+        } else {
+          console.log("Клик события не является доверенным");
+        }
+      });
+
+      // Функция симуляции клика
+      function simulatedClick() {
+        // Создание собствееного события клика
+        // { bubbles: true } Указывает, является ли данное событие всплывающим внутри DOM.
+        const clickEvent = new Event("click", { bubbles: true });
+        // Отправка события
+        button.dispatchEvent(clickEvent);
+      }
+
+      setTimeout(simulatedClick, 2000); // Имитация клика через 2 секунды
+    </script>
+  </body>
+</html>
