@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>List tasks</title>
+    <style>
+      body {
+        margin: 0;
+        padding: 0;
+        font-family: Arial, sans-serif;
+        text-align: center;
+      }
+
+      h1 {
+        color: #333;
+        font-style: 24px;
+        margin-top: 20px;
+      }
+
+      .task-input {
+        padding: 8px;
+        font-style: 16px;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+        width: 300px;
+        margin-top: 10px;
+      }
+
+      .add-button {
+        background-color: #4caf50;
+        color: #fff;
+        border: none;
+        padding: 10px 20px;
+        font-size: 16px;
+        border-radius: 4px;
+        cursor: pointer;
+        margin-top: 10px;
+      }
+
+      .add-button:hover {
+        border-color: #45a049;
+      }
+
+      .task-list {
+        list-style-type: none;
+        padding: 0;
+        text-align: left;
+        margin-top: 20px;
+      }
+
+      .task-item {
+        display: flex;
+        align-items: center;
+        margin-bottom: 5px;
+      }
+
+      .task-description {
+        flex-grow: 1;
+        margin-right: 10px;
+        margin-left: 10px;
+      }
+
+      .delete-button {
+        background-color: #ff0000;
+        color: #fff;
+        border: none;
+        padding: 5px 10px;
+        margin-right: 10px;
+        cursor: pointer;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>Список дел</h1>
+    <input type="text" class="task-input" placeholder="Добавить задачу" />
+    <button class="add-button">Добавить</button>
+    <ul class="task-list"></ul>
+
+    <script>
+      // Выбираем элементы с которыми будем работать
+      const taskInput = document.querySelector(".task-input");
+      const addButton = document.querySelector(".add-button");
+      const taskList = document.querySelector(".task-list");
+
+      // Восстановление списка дел из LocalStorage при загрузке страницы
+      if (localStorage.getItem("tasks")) {
+        // Вставка в <ul> значений из localStorage
+        taskList.innerHTML = localStorage.getItem("tasks");
+      }
+
+      // Добавление новой задачи при нажатии на кнопку "Добавить"
+      addButton.addEventListener("click", () => {
+        // Получение значения из поля ввода input
+        const taskDescription = taskInput.value.trim();
+        // Проверка на пустоту введённых данных
+        if (taskDescription !== "") {
+          // Создание элемента <li>
+          const listItem = document.createElement("li");
+          // Добавления класса task-item элементу <li>
+          listItem.classList.add("task-item");
+          // Добавление HTML в <li>
+          listItem.innerHTML = `
+            <span class="task-description">${taskDescription}</span>
+            <button class="delete-button">Удалить</button>
+            `;
+
+          // Добавление <li> в <ul>
+          taskList.append(listItem);
+          taskInput.value = "";
+
+          // Сохранение нового списка дел в LocalStorage
+          localStorage.setItem("tasks", taskList.innerHTML);
+        }
+      });
+
+      // Удаление элемента списка при клике
+      taskList.addEventListener("click", (event) => {
+        // Проверка произошёл ли клик по кнопке "Удалить"
+        if (event.target.classList.contains("delete-button")) {
+          // Получение элемента <li> ближайшего к кнопке "Удалить"
+          const listItem = event.target.closest("li");
+
+          // Удаление элемента <li> из DOM
+          listItem.parentNode.removeChild(listItem);
+          // Удаление элемента <li> из DOM альтернативный способ, лучше
+          //   listItem.remove();
+
+          // Обновляем список дел в localStorage
+          localStorage.setItem("tasks", taskList.innerHTML);
+        }
+      });
+    </script>
+  </body>
+</html>

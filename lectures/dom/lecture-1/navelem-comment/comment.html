@@ -1,0 +1,76 @@
+<!-- У нас есть дерево комментариев, представленное в виде вложенных элементов <div>. Каждый комментарий имеет кнопку "Ответить", при нажатии на которую открывается форма для написания ответа. Ваша задача - реализовать функциональность, чтобы при нажатии на кнопку "Ответить", только форма этого конкретного комментария открывалась, остальные формы оставались скрытыми. -->
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <style>
+      .reply-form {
+        display: none;
+      }
+    </style>
+    <title>Document</title>
+  </head>
+  <body>
+    <div class="comments-container">
+      <div class="comment">
+        <p>Комментарий 1</p>
+        <button class="reply-button">Ответить</button>
+        <form action="" class="reply-form">
+          <textarea placeholder="Напишите ответ..."></textarea>
+          <button class="submit-button">Отправить</button>
+        </form>
+      </div>
+
+      <div class="comment">
+        <p>Комментарий 1.1</p>
+        <button class="reply-button">Ответить</button>
+        <form action="" class="reply-form">
+          <textarea placeholder="Напишите ответ..."></textarea>
+          <button class="submit-button">Отправить</button>
+        </form>
+      </div>
+
+      <div class="comment">
+        <p>Комментарий 1.2</p>
+        <button class="reply-button">Ответить</button>
+        <form action="" class="reply-form">
+          <textarea placeholder="Напишите ответ..."></textarea>
+          <button class="submit-button">Отправить</button>
+        </form>
+      </div>
+    </div>
+
+    <script>
+      // Выбрать все элементы с классом .reply-button т.е. с кнопкой "Ответить"
+      const replyButtons = document.querySelectorAll(".reply-button");
+
+      // С помощью метода forEach проходимся по каждому элементу массива с узлами кпопок "Ответить"
+      replyButtons.forEach((button) => {
+        // и каждой кнопки ответить вешает событие по клику
+        button.addEventListener("click", () => {
+          // Выбрать ближайший родительский элемент с классом .comment
+          const comment = button.closest(".comment");
+          // Выбрать форму с класс .reply-form в родительсков элементе в котором произошёл клик
+          const replyForm = comment.querySelector(".reply-form");
+
+          // Скрываем все формы ответов
+          // Выбрать все элементы с классом .reply-form т.е. с формой
+          const allReplyForms = document.querySelectorAll(".reply-form");
+
+          // С помощью forEach проходимся по каждому элементу массива с узлами форм
+          allReplyForms.forEach((form) => {
+            // Если текущая форма не равна форме в которой произошло событие клик
+            if (form !== replyForm) {
+              // то устанавливам форме свойство display="none"
+              form.style.display = "none";
+            }
+          });
+
+          // Отображаем форму ответов только для текущего комментария
+          replyForm.style.display = "block";
+        });
+      });
+    </script>
+  </body>
+</html>
