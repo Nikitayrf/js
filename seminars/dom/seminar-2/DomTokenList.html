@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>DomTokenList</title>
+  </head>
+  <body>
+    <div>Выбранный элемент</div>
+
+    <script>
+      let divEl = document.querySelector("div");
+      console.log(divEl.classList);
+      //   /*
+      //   DOMTokenList [value: '']
+      //   length: 0
+      //   value: ""
+      //   [[Prototype]]: DOMTokenList
+      //   */
+
+      //   // Добавим класс к элементу
+      //   divEl.classList.add("test");
+      //   console.log(divEl.classList);
+      //   /*
+      //   DOMTokenList ['test', value: 'test']
+      //   0: "test"
+      //   length: 1
+      //   value: "test"
+      //   [[Prototype]]: DOMTokenList
+      //   */
+
+      //   // Узнать длину массива свойства
+      //   console.log(divEl.classList.length); // 1
+
+      //   // Узнать какие есть свойства у divEl
+      //   console.log(divEl.classList.value); // "test"
+      //   divEl.classList.add("new");
+      //   console.log(divEl.classList.remove()); // test new
+    </script>
+  </body>
+</html>
