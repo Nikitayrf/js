@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+  </head>
+  <body>
+    <form name="superForm">
+      title: <input name="title" value="test product" />
+      <br />
+      price: <input name="price" type="number" value="13.5" />
+      <br />
+      description: <input name="description" value="lorem ipsum set" />
+      <br />
+      image: <input name="image" value="https://i.pravatar.cc" />
+      <br />
+      category: <input name="category" value="electronic" />
+      <input type="submit" />
+    </form>
+    <script>
+      //   "use strict";
+      //   const form = document.forms.superForm;
+
+      //   // В момент отправки формы, используя async ...
+      //   form.onsubmit = async (e) => {
+      //     // ... останавливаю отправку
+      //     e.preventDefault();
+
+      //     // Формирую новый объект FormData и отправляю его методам fetch с параметром POST
+      //     let response = await fetch("https://fakestoreapi.com/products", {
+      //       method: "POST",
+      //       body: new FormData(form),
+      //     });
+
+      //     // полученный response в виде объекта FormData с новым id, сохраняем в result
+      //     let result = await response.json();
+      //     console.log(result);
+      //   };
+
+      (async () => {
+        // Шаг 1: начинаем загрузку fetch, получаем поток для чтения
+        let response = await fetch(
+          "https://api.github.com/repos/javascript-tutorial/en.javascript.info/commits?per_page=100"
+        );
+
+        // читаем поток данных
+        const reader = response.body.getReader();
+        console.log(reader);
+
+        // Шаг 2: считываем данные:
+        let receivedLength = 0; // количество байт, полученных на данный момент
+        let chunks = []; // массив полученных двойных фрагментов (составляющих тело ответа)
+        while (true) {
+          const { done, value } = await reader.read();
+
+          if (done) break;
+
+          chunks.push(value);
+          receivedLength += value.length;
+
+          console.log(`Получено ${receivedLength} байт`);
+        }
+
+        // Шаг 3: соединим фрагменты и общий типизированный массив Uin8Array
+        let chunkAll = new Uint8Array(receivedLength);
+        let position = 0;
+        for (let chunk of chunks) {
+          chunkAll.set(chunk, position);
+          position += chunk.length;
+        }
+
+        // Шаг 4: декодируем Uint8Array Обратно в строку
+        let result = new TextDecoder("utf-8").decode(chunkAll);
+
+        // Готово!
+        let commits = JSON.parse(result);
+        console.log(commits);
+      })();
+    </script>
+  </body>
+</html>

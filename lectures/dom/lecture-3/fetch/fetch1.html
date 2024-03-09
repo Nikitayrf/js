@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+  </head>
+  <body>
+    <script>
+      // 1-я часть
+      //   "use strict";
+      //   (async () => {
+      //     const url = "https://catfact.ninja/fact";
+      //     const response = await fetch(url);
+      //     console.log(response.status);
+      //     console.log(response.ok);
+      //     const fact = await response.json();
+      //     console.log(fact);
+      //     /*
+      //     {fact: "The cat's tail is used to maintain balance.", length: 43}
+      //     fact: "The cat's tail is used to maintain balance."
+      //     length: 43
+      //     [[Prototype]]: Object
+      //     */
+      //   })();
+
+      // 2-я часть
+      "use strict";
+      fetch("https://catfact.ninja/fact")
+        .then((response) => response.json())
+        .then(console.log);
+
+      // Или для вывода только факта
+      ("use strict");
+      fetch("https://catfact.ninja/fact")
+        .then((response) => response.json())
+        .then((obg) => console.log(obg.fact));
+    </script>
+  </body>
+</html>
