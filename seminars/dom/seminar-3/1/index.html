@@ -87,43 +87,48 @@
       ];
       const productsEl = document.querySelector(".products");
 
+      // productHTML содержит HTML в виде строки из массива объектов  productsData
       const productHTML = createProductsHtml(productsData);
+      // Вставояем строку содержащую HTML на страницу в элемент productsEl
       productsEl.innerHTML = productHTML;
 
+      // Функция создаёт строку с HTML разметкой из переданного массива объектов
       function createProductsHtml(products) {
         return products
           .map(
             (product) => `
         <div data-id=${product.id}>
-            <h3>${product.name}</h3>
-            <p>${product.category}</p>
+          <h3>${product.name}</h3>
+          <p>${product.category}</p>
             <button class="add-button">Купить</button>
-        </div>
+            </div>
         `
           )
           .join("");
       }
 
+      // Находим <select>
       const selectEl = document.querySelector("#category-list");
+      // При изменение selectEl происходит фильтрация по категории
       selectEl.addEventListener("change", () => {
-        const selectedCategory = selectEl.value;
-        const products = getProductsByCategory(selectedCategory);
+        // Получение значение атрибута выбранного option в <select>
+        const selectedCategory = selectEl.value; // Электроника
+        const products = getProductsByCategory(selectedCategory); // (3) [{…}, {…}, {…}] Массив объектов по выбранной категории
+        // Создание строки с HTML разметкой отфильтрованных лементов по категори
         const productHTML = createProductsHtml(products);
+        // Вставка HTML с отфильтрованными элементами по категории
         productsEl.innerHTML = productHTML;
       });
 
+      // Функция возвращает массив отфильтрованных объектов или массив всех объектов
       function getProductsByCategory(category) {
+        // Если выбран атрибут all выбранной категории, то вернуть все объекты
         if (category === "all") {
           return productsData;
         }
+        // Если выбран атрибут другой выбранной категории, то вернуть массив отфильтрованных объектов
         return productsData.filter((product) => product.category === category);
       }
-
-      //   productsEl.addEventListener("click", ({ target }) => {
-      //     if (!target.closest(".add-button")) {
-      //       return;
-      //     }
-      //   });
     </script>
   </body>
 </html>
