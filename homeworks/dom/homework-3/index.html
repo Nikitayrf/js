@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Homework dom 3</title>
+  </head>
+  <body>
+    <div class="photo-container">
+      <!-- <div data-id="" class="photo-image">
+        <img src="" alt="" />
+        <p class="photo-photographer"></p>
+        <button class="photo-like">Лайк</button>
+        <div class="photo-like_count"></div>
+      </div> -->
+    </div>
+    <!-- Цель: Разработать веб-приложение, которое будет отображать новое случайное изображение из коллекции Unsplash, давая пользователю возможность узнать больше о фотографе и сделать "лайк" изображению.
+    
+    Регистрация на Unsplash:
+        • Перейдите на веб-сайт Unsplash (https://unsplash.com/).
+        • Зарегистрируйтесь или войдите в свой аккаунт. (если у вас не было регистрации до этого, новый аккаунт создавать не нужно).
+    
+    Создание приложения:
+        • Перейдите на страницу разработчика Unsplash (https://unsplash.com/developers).
+        • Нажмите "New Application".
+        • Заполните необходимую информацию о приложении (можете использовать http://localhost для тестирования).
+        • Получите свой API-ключ после создания приложения.
+        
+    Разработка веб-приложения:
+        • Создайте HTML-страницу с элементами: изображение, имя фотографа, кнопка "лайк" и счетчик лайков.
+        • Используя JavaScript и ваш API-ключ, получите случайное изображение из Unsplash каждый раз, когда пользователь загружает страницу. Обратите внимание, что должно подгружаться всегда случайное изображение, для этого есть отдельная ручка (эндпоинт) у API.
+        • Отобразите информацию о фотографе под изображением.
+        • Реализуйте функционал "лайка". Каждый раз, когда пользователь нажимает кнопку "лайк", счетчик должен увеличиваться на единицу. Одну фотографию пользователь может лайкнуть только один раз. Также должна быть возможность снять лайк, если ему разонравилась картинка.
+        • Добавьте функцию сохранения количества лайков в локальное хранилище, чтобы при новой загрузке страницы счетчик не сбрасывался, если будет показана та же самая картинка.
+        • Реализуйте возможность просмотра предыдущих фото с сохранением их в истории просмотров в localstorage.
+        • Реализовать все с помощью async/await, без цепочем then. -->
+    <script>
+      "use strict";
+      const accessKey = "Y4_JW_3mcE4w-PvaWQORKGIa8tNc4JS16YIk_k3IFtU";
+
+      const fetchPhotos = async () => {
+        const response = await fetch(
+          `https://api.unsplash.com/photos/random?client_id=${accessKey}`
+        );
+        if (!response.ok) {
+          throw new Error("Ошибка при загрузке данных");
+        }
+        const data = await response.json();
+        return data;
+      };
+
+      async function run() {
+        try {
+          const data = await fetchPhotos();
+          addPhotoInHTML(data);
+          likeBtnClick(data);
+          loadLikesCount(data);
+          savePhoto(data);
+          prevBtnClick(data);
+        } catch (error) {
+          const errorMessage = document.createElement("div");
+          errorMessage.textContent = error.message;
+          document.querySelector(".photo-container").append(errorMessage);
+        }
+      }
+      run();
+
+      const photoContainer = document.querySelector(".photo-container");
+
+      function addPhotoInHTML(photo) {
+        photoContainer.insertAdjacentHTML(
+          "beforeend",
+          `<div data-id="${photo.id}" class="photo-image">
+                <img src="${photo.urls.small}" alt="${photo.alt_description}" />
+                <p class="photo-photographer">${photo.user.name}</p>
+                <button class="photo-like">Лайк</button>
+                <div class="photo-like_count">${photo.likes}</div>
+                <button class="photo-history-prev">Предидущее фото</button>`
+        );
+      }
+
+      const lsKey = "likes";
+      if (!localStorage.getItem(lsKey)) {
+        localStorage.setItem(lsKey, JSON.stringify([]));
+      }
+
+      function likeBtnClick(photo) {
+        const likeBtn = document.querySelector(".photo-like");
+        const likeCount = document.querySelector(".photo-like_count");
+        const likes = JSON.parse(localStorage.getItem(lsKey));
+        likeBtn.addEventListener("click", async () => {
+          const likes = JSON.parse(localStorage.getItem(lsKey));
+          if (likes.includes(photo.id)) {
+            const index = likes.indexOf(photo.id);
+            likes.splice(index, 1);
+            likeCount.textContent = +photo.likes;
+          } else {
+            likes.push(photo.id);
+            likeCount.textContent = +photo.likes + 1;
+          }
+          saveData(lsKey, likes);
+        });
+      }
+
+      const saveData = (key, array) => {
+        localStorage.setItem(key, JSON.stringify(array));
+      };
+
+      function loadLikesCount(photo) {
+        const likeBtn = document.querySelector(".photo-like");
+        const likeCount = document.querySelector(".photo-like_count");
+        const likes = JSON.parse(localStorage.getItem(lsKey));
+        if (likes.includes(photo.id)) {
+          const index = likes.indexOf(photo.id);
+          likeCount.textContent = +photo.likes + 1;
+        } else {
+          likeCount.textContent = +photo.likes;
+        }
+      }
+
+      const lsKeyPhotos = "photos";
+      if (!localStorage.getItem(lsKeyPhotos)) {
+        localStorage.setItem(lsKeyPhotos, JSON.stringify([]));
+      }
+
+      function savePhoto(photo) {
+        let photos = JSON.parse(localStorage.getItem("photos"));
+        photos.push(photo);
+        saveData(lsKeyPhotos, photos);
+      }
+
+      function prevBtnClick(photo) {
+        const prevBtn = document.querySelector(".photo-history-prev");
+        const photos = JSON.parse(localStorage.getItem("photos"));
+
+        prevBtn.addEventListener("click", () => {
+          const index = photos.indexOf(photo);
+          if (photos.length > 1) {
+            console.log(index);
+            photos.splice(index, 1);
+            saveData("photos", photos);
+            const photo = photos[photos.length - 1];
+            photoContainer.innerHTML = "";
+            addPhotoInHTML(photo);
+            likeBtnClick(photo);
+            loadLikesCount(photo);
+            savePhoto(photo);
+            prevBtnClick(photo);
+          } else {
+            const errorMessage = document.createElement("div");
+            errorMessage.textContent = "Нет предыдущих фото";
+            document.querySelector(".photo-container").append(errorMessage);
+          }
+        });
+      }
+    </script>
+  </body>
+</html>
